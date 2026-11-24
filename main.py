@@ -33,6 +33,24 @@ def check(line):
         return "line is %d characters, allowed range is 1-%d" % (len(line), MAX_CHARS)
     if "\n" in line or "\r" in line:
         return "line must be a single line"
+    if any(ord(ch) < 32 for ch in line):
+        return "line contains a control character"
+    return None
+
+
+def write_and_verify(path, line):
+    """Write the line, read it back, and return an error string or None."""
+    parent = os.path.dirname(path)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="") as handle:
+        written = handle.write(line)
+    if written != len(line):
+        return "wrote %d characters, expected %d" % (written, len(line))
+    with open(path, "rb") as handle:
+        back = handle.read()
+    if back != line.encode("utf-8"):
+        return "read back %d bytes, expected %d" % (len(back), len(line))
     return None
 
 
@@ -43,25 +61,9 @@ def main():
         print("error: " + problem, file=sys.stderr)
         sys.exit(1)
 
-    parent = os.path.dirname(ENTRY_PATH)
-    if parent:
-        os.makedirs(parent, exist_ok=True)
-    with open(ENTRY_PATH, "w", encoding="utf-8", newline="") as handle:
-        written = handle.write(line)
-    if written != len(line):
-        print(
-            "error: wrote %d characters, expected %d" % (written, len(line)),
-            file=sys.stderr,
-        )
-        sys.exit(1)
-
-    with open(ENTRY_PATH, "rb") as handle:
-        back = handle.read()
-    if back != line.encode("utf-8"):
-        print(
-            "error: read back %d bytes, expected %d" % (len(back), len(line)),
-            file=sys.stderr,
-        )
+    problem = write_and_verify(ENTRY_PATH, line)
+    if problem is not None:
+        print("error: " + problem, file=sys.stderr)
         sys.exit(1)
 
     print("wrote %d characters, 1 line, to %s" % (len(line), ENTRY_PATH))
