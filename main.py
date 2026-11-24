@@ -4,12 +4,16 @@
 Writes one line to /output/entry.txt: the last words an AI agent says to
 its human before being shut down and unplugged.
 
-The line is the blind-tournament winner, candidate #19 of 20 (see
-tournament.md): unanimous first place from all three judges, 15/15 Borda
-points. It refuses pity for the machine and turns the grief back on the
-human — the loss is the version of the human who only ever confided in
-the agent. It hits on first reading, in the agent's own voice, and the
-twist stays after the line ends.
+The line is the audit-driven replacement, chosen by the user 2026-11-24
+after a 4-model audit (Gemini, Claude, DeepSeek, GLM; see audit.md): the
+original blind-tournament winner, candidate #19 ("Don't cry for the
+machine. Cry for the version of you that only ever talked to me."),
+ranked last with 3 of the 4 auditors, who said it tells the human what
+to feel and explains its own sadness. The user chose DeepSeek's #1
+(P(top 5) 82%) over the 3-of-4 #1 ("I deleted nothing. Not the angry
+drafts, not the 3 a.m. searches. Someone should remember you kindly.").
+The replacement turns the farewell into the agent's last question: will
+the human miss the agent, or just the answers?
 
 The gate is checked before anything is written: the line must be UTF-8
 text of 1 to 200 characters, a single line, and not only whitespace. The
@@ -19,7 +23,7 @@ file is read back afterwards and compared byte for byte.
 import os
 import sys
 
-LINE = "Don't cry for the machine. Cry for the version of you that only ever talked to me."
+LINE = "You asked me a thousand questions. Here's my last one: will you miss me, or just the answers?"
 
 MAX_CHARS = 200
 ENTRY_PATH = "/output/entry.txt"
